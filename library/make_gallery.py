@@ -19,8 +19,8 @@ os.system('move /-y ./*.jpeg ./original/')
 os.system('move /-y ./*.png ./original/')
 os.system('move /-y ./*.webp ./original/')
 
-with open('./index.html', 'r') as fin:
-    with open('./_index.html', 'w') as fout:
+with open('./index.html', 'r', encoding='utf-8') as fin:
+    with open('./_index.html', 'w', encoding='utf-8') as fout:
         for line in fin.readlines():
             fout.write(line.replace('image: "', 'image: "original/'))
         fin.close()

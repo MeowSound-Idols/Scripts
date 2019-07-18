@@ -32,13 +32,13 @@ def processCRES(i, data):
     data = data[12:]
     imgtype = get_image_type(None, data)
     if imgtype is None:
-        print "        Warning: CRES Section %s does not contain a recognised resource" % i
+        print("        Warning: CRES Section %s does not contain a recognised resource" % i)
         imgtype = "dat"
     imgname = "HDimage%05d.%s" % (i, imgtype)
     imgdir = os.path.join(sys.argv[2], "azw6_images")
     if not os.path.exists(imgdir):
         os.mkdir(imgdir)
-    print "        Extracting HD image: {0:s} from section {1:d}".format(imgname,i)
+    print("        Extracting HD image: {0:s} from section {1:d}".format(imgname,i))
     imgpath = os.path.join(imgdir, imgname)
     with open(imgpath, 'wb') as f:
         f.write(data) 
@@ -132,35 +132,35 @@ def dump_contexth(codec, extheader):
     for _ in range(num_items):
         id, size = struct.unpack('>LL', extheader[pos:pos+8])
         content = extheader[pos + 8: pos + size]
-        if id in id_map_strings.keys():
+        if id in list(id_map_strings.keys()):
             name = id_map_strings[id]
-            print '\n    Key: "%s"\n        Value: "%s"' % (name, unicode(content, codec).encode("utf-8"))
-        elif id in id_map_values.keys():
+            print('\n    Key: "%s"\n        Value: "%s"' % (name, str(content, codec).encode("utf-8")))
+        elif id in list(id_map_values.keys()):
             name = id_map_values[id]
             if size == 9:
                 value, = struct.unpack('B',content)
-                print '\n    Key: "%s"\n        Value: 0x%01x' % (name, value)
+                print('\n    Key: "%s"\n        Value: 0x%01x' % (name, value))
             elif size == 10:
                 value, = struct.unpack('>H',content)
-                print '\n    Key: "%s"\n        Value: 0x%02x' % (name, value)
+                print('\n    Key: "%s"\n        Value: 0x%02x' % (name, value))
             elif size == 12:
                 value, = struct.unpack('>L',content)
-                print '\n    Key: "%s"\n        Value: 0x%04x' % (name, value)
+                print('\n    Key: "%s"\n        Value: 0x%04x' % (name, value))
             else:
-                print "\nError: Value for %s has unexpected size of %s" % (name, size)
-        elif id in id_map_hexstrings.keys():
+                print("\nError: Value for %s has unexpected size of %s" % (name, size))
+        elif id in list(id_map_hexstrings.keys()):
             name = id_map_hexstrings[id]
-            print '\n    Key: "%s"\n        Value: 0x%s' % (name, content.encode('hex'))
+            print('\n    Key: "%s"\n        Value: 0x%s' % (name, content.encode('hex')))
         else:
-            print "\nWarning: Unknown metadata with id %s found" % id
+            print("\nWarning: Unknown metadata with id %s found" % id)
             name = str(id) + ' (hex)'
-            print '    Key: "%s"\n        Value: 0x%s' % (name, content.encode('hex'))
+            print('    Key: "%s"\n        Value: 0x%s' % (name, content.encode('hex')))
         pos += size
     return
 
 
 def sortedHeaderKeys(mheader):
-    hdrkeys = sorted(mheader.keys(), key=lambda akey: mheader[akey][0])
+    hdrkeys = sorted(list(mheader.keys()), key=lambda akey: mheader[akey][0])
     return hdrkeys
 
 
@@ -237,7 +237,7 @@ class HdrParser:
             1252 : 'windows-1252',
             65001: 'utf-8',
             }
-        if self.hdr['codepage'] in self.codec_map.keys():
+        if self.hdr['codepage'] in list(self.codec_map.keys()):
             self.codec = self.codec_map[self.hdr['codepage']]
         self.title = self.title.decode(self.codec).encode('utf-8')
 
@@ -249,33 +249,33 @@ class HdrParser:
                     fmt_string = "  Field: %20s   Offset: 0x%03x   Width:  %d   Value: 0x%0" + str(tot_len) + "x"
                 else:
                     fmt_string = "  Field: %20s   Offset: 0x%03x   Width:  %d   Value: %s"
-                print fmt_string % (key, pos, tot_len, self.hdr[key])
-        print "EXTH Region Length:  0x%0x" % len(self.exth)
-        print "EXTH MetaData"
+                print(fmt_string % (key, pos, tot_len, self.hdr[key]))
+        print("EXTH Region Length:  0x%0x" % len(self.exth))
+        print("EXTH MetaData")
         #print self.title
         dump_contexth(self.codec, self.exth)
         return
 
 
 def usage(progname):
-    print ""
-    print "Description:"
-    print "   Dump the image from an AZW6 HD container file"
-    print "  "
-    print "Usage:"
-    print "  %s <input_path> <output_path>" % progname
-    print "  "
-    print "Options:"
-    print "    -h           print this help message"
+    print("")
+    print("Description:")
+    print("   Dump the image from an AZW6 HD container file")
+    print("  ")
+    print("Usage:")
+    print("  %s <input_path> <output_path>" % progname)
+    print("  ")
+    print("Options:")
+    print("    -h           print this help message")
 
 
 def main(argv=sys.argv):
-    print "DumpAZW6 v01"
+    print("DumpAZW6 v01")
     progname = os.path.basename(argv[0])
     try:
         opts, args = getopt.getopt(sys.argv[1:], "h")
-    except getopt.GetoptError, err:
-        print str(err)
+    except getopt.GetoptError as err:
+        print(str(err))
         usage(progname)
         sys.exit(2)
 
@@ -290,17 +290,17 @@ def main(argv=sys.argv):
 
     infile = args[0]
     infileext = os.path.splitext(infile)[1].upper()
-    print infile, infileext
+    print(infile, infileext)
     if infileext not in ['.AZW6', '.RES']:
-        print "Error: first parameter must be a Kindle AZW6 HD container file."
+        print("Error: first parameter must be a Kindle AZW6 HD container file.")
         return 1
 
     try:
         # make sure it is really an hd container file
-        contdata = file(infile, 'rb').read()
+        contdata = open(infile, 'rb').read()
         palmheader = contdata[0:78]
         ident = palmheader[0x3C:0x3C+8]
-        if ident != 'RBINCONT':
+        if ident != b'RBINCONT':
             raise dumpHeaderException('invalid file format')
 
         headers = {}
@@ -308,59 +308,62 @@ def main(argv=sys.argv):
         pp = PalmDB(contdata)
         header = pp.readsection(0)
 
-        print "\n\nFirst Header Dump from Section %d" % 0
+        print("\n\nFirst Header Dump from Section %d" % 0)
         hp = HdrParser(header, 0)
         hp.dumpHeaderInfo()
 
         # now dump a basic sector map of the palmdb
         n = pp.getnumsections()
         dtmap = {
-            "FONT": "FONT",
-            "RESC": "RESC",
-            "CRES": "CRES",
-            "CONT": "CONT",
-            chr(0xa0) + chr(0xa0) + chr(0xa0) + chr(0xa0): "Empty_Image/Resource_Placeholder",
-            chr(0xe9) + chr(0x8e) + "\r\n" : "EOF_RECORD",
+            b"FONT": b"FONT",
+            b"RESC": b"RESC",
+            b"CRES": b"CRES",
+            b"CONT": b"CONT",
+            b"\xa0\xa0\xa0\xa0": b"Empty_Image/Resource_Placeholder",
+            b"\xe9\x8e\r\n" : b"EOF_RECORD",
             }
         dtmap2 = {
-            "kindle:embed" : "KINDLE:EMBED",
+            b"kindle:embed" : b"KINDLE:EMBED",
         }
         tr = -1
         off = -1
         hp = None
         secmap = {}
-        print "\nMap of Palm DB Sections"
-        print "    Dec  - Hex : Description"
-        print "    ---- - ----  -----------"
-        for i in xrange(n):
+        print("\nMap of Palm DB Sections")
+        print("    Dec  - Hex : Description")
+        print("    ---- - ----  -----------")
+        for i in range(n):
             before, after = pp.getsecaddr(i)
             data = pp.readsection(i)
             dlen = len(data)
             dt = data[0:4]
             dtext = data[0:12]
             desc = '' 
-            if dtext in dtmap2.keys():
+            if dtext in list(dtmap2.keys()):
                 desc = data
                 linkhrefs = []
-                hreflist = desc.split('|')
+                hreflist = desc.decode().split('|')
                 for href in hreflist:
                     if href != "":
                         linkhrefs.append("        " +   href)
                 desc = "\n" + "\n".join(linkhrefs)
-            elif dt in dtmap.keys():
+            elif dt in list(dtmap.keys()):
                 desc = dtmap[dt]
-                if dt == "CONT":
+                if dt == b"CONT":
                     desc="Cont Header"
-                elif dt == "CRES":
+                elif dt == b"CRES":
                     processCRES(i, data)
             else:
-                desc = dtext.encode('hex')
+                desc = dtext.hex()
                 desc = desc + " " + dtext
-            if desc != "CONT":
-                print "    %04d - %04x: %s [%d]" % (i, i, desc, dlen)
+            if desc != b"CONT":
+                print("    %04d - %04x: %s [%d]" % (i, i, desc, dlen))
 
-    except Exception, e:
-        print "Error: %s" % e
+    except Exception as e:
+        import traceback
+
+        print(traceback.format_exc())
+        print("Error: %s" % e)
         return 1
 
     return 0

@@ -31,6 +31,12 @@ else:
 
 # dump resource file
 call('"{}" "{}" "{}" "{}"'.format(PYTHON_27_PATH, DUMP_AZW6_SCRIPT_LOCATION, resource_path, os.path.dirname(resource_path)))
+
+# 使用以下两行的方式直接调用，取代建立一个新进程
+# from DumpAZW6_v01 import main
+# main(['DumpAZW6_v01.py', resource_path, os.path.dirname(resource_path)])
+
+
 # convert azw to zip by calibre
 call('"{}" "{}" temp.zip --extract-to "{}"'.format(CALIBRE_CLI_PATH, book_path, os.path.dirname(book_path) + '/book_files'))
 output_image_path = os.path.dirname(book_path) + '/book_files/temp_files/images'

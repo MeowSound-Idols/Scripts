@@ -22,7 +22,6 @@ if len(sys.argv) != 3:
 # PYTHON_27_PATH = 'D:/Python27/python.exe'
 DUMP_AZW6_SCRIPT_LOCATION = './DumpAZW6_v01.py'
 CALIBRE_CLI_PATH = 'C:/Program Files (x86)/Calibre2/ebook-convert.exe'
-
 if sys.argv[1].endswith('.res'):
     resource_path = sys.argv[1]
     book_path = sys.argv[2]
@@ -32,8 +31,7 @@ else:
 
 # dump resource file
 # call('"{}" "{}" "{}" "{}"'.format(PYTHON_27_PATH, DUMP_AZW6_SCRIPT_LOCATION, resource_path, os.path.dirname(resource_path)))
-
-main(['DumpAZW6_v01.py', resource_path, os.path.dirname(resource_path)])
+call('python "{}" "{}" "{}"'.format(DUMP_AZW6_SCRIPT_LOCATION, resource_path, os.path.dirname(book_path)))
 
 # convert azw to zip by calibre
 call('"{}" "{}" temp.zip --extract-to "{}"'.format(CALIBRE_CLI_PATH, book_path, os.path.dirname(book_path) + '/book_files'))
